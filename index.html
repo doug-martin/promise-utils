@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Promise-utils by doug-martin</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Promise-utils</h1>
+        <h2>Collection of promise utilities</h2>
+        <a href="https://github.com/doug-martin/promise-utils" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <p><a href="https://travis-ci.org/doug-martin/promise-utils"><img src="https://travis-ci.org/doug-martin/promise-utils.png?branch=master" alt="Build Status"></a></p>
+
+<p><a href="http://ci.testling.com/doug-martin/promise-utils"><img src="https://ci.testling.com/doug-martin/promise-utils.png" alt="browser support"></a></p>
+
+<h1>promise-utils</h1>
+
+<p><code>promise-utils</code> is a Javascript library that provides utilities for working with promises. <code>promise-utils</code> can be used as a monad library for promises or each function can be used standalone.</p>
+
+<p>This library uses <a href="https://github.com/doug-martin/promise-extended"><code>promise-extended</code></a> internally but can be used with any promises A+ compliant library such as <a href="https://github.com/kriskowal/q"><code>Q</code></a></p>
+
+<p><code>promise-utils</code> can be used standalone or incorporated into <a href="https://github.com/doug-martin/extended"><code>extended</code></a></p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">pUtils</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"promise-utils"</span><span class="p">);</span>
+</pre></div>
+
+<p>Or</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">myextended</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"extended"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s2">"promise-extended"</span><span class="p">));</span>
+</pre></div>
+
+<h2>Installation</h2>
+
+<pre><code>npm install promise-utils
+</code></pre>
+
+<p>Or <a href="https://raw.github.com/doug-martin/promise-utils/master/index.js">download the source</a> (<a href="https://raw.github.com/doug-martin/promise-utils/master/promise-utils.min.js">minified</a>)</p>
+
+<h2>Usage</h2>
+
+<h3>Arrays</h3>
+
+<p><code>promise-utils</code> can be used with promises or normal arrays by using the <code>async</code> method.</p>
+
+<p><strong>NOTE</strong> The examples below uses a <code>resolve</code> method which represents turning an array into a promise resolved with the given array. This is used for brevity where you would typically be working with promises returned from an asynchronous method such as a database call.</p>
+
+<div class="highlight"><pre>
+<span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">promiseArr</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">arr</span><span class="p">);</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">arr</span><span class="p">).</span><span class="nx">async</span><span class="p">().</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Done Looping"</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">//OR</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">promiseArr</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Done Looping"</span><span class="p">);</span>
+<span class="p">});</span>
+
+
+</pre></div>
+
+<p><strong>Chaining</strong></p>
+
+<p>When using <code>promise-utils</code> as a monad with a promise you may chain methods together.</p>
+
+<div class="highlight"><pre>
+<span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]);</span>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">num</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">num</span> <span class="o">*</span> <span class="p">(</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">num</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">num</span> <span class="o">%</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">avg</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">){</span>
+        <span class="c1">//11.666666666666666</span>
+    <span class="p">});</span>
+
+</pre></div>
+
+<p><strong><code>forEach</code></strong></p>
+
+<p>Similar to <code>Array#forEach</code> except that it resolves with the original array for chaining.</p>
+
+<div class="highlight"><pre><span class="c1">//as a monad</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Done Looping"</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Done Looping"</span><span class="p">);</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>You may also return a promise from the iterator function, which will prevent the returned promise from resolving until all the returned promises are done.</p>
+
+<div class="highlight"><pre><span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+     <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">();</span>
+     <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ret</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+     <span class="p">},</span> <span class="mi">200</span><span class="p">);</span>
+     <span class="k">return</span> <span class="nx">ret</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="c1">//all promises from iterator function are resolved.</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Done Looping"</span><span class="p">);</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>You may also specify a <code>limit</code> which will specify the number of items to be looped at a time, if limit is not specified then all items will be iterated regardless of whether or not the previous item in the array is done.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">();</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ret</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+    <span class="p">},</span> <span class="mi">200</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">ret</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">},</span> <span class="mi">1</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Done Looping"</span><span class="p">);</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>In the above example only one item will be iterated one at a time.</p>
+
+<p><strong><code>map</code></strong></p>
+
+<p>Async version of <code>Array#map</code>.</p>
+
+<div class="highlight"><pre><span class="c1">//as a monad</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">item</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//[2, 4, 6];</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">item</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//[2, 4, 6];</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>You may also return a promise from the iterator function, which will prevent the returned promise from resolving until all the returned promises are done.</p>
+
+<div class="highlight"><pre> <span class="c1">//as a monad</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+     <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">();</span>
+     <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ret</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span><span class="nx">item</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span>
+     <span class="p">},</span> <span class="mi">200</span><span class="p">);</span>
+     <span class="k">return</span> <span class="nx">ret</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//[2, 4, 6];</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>You may also specify a <code>limit</code> which will specify the number of items to be looped at a time, if limit is not specified then all items will be iterated regardless of whether or not the previous item in the array is done.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">();</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ret</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span><span class="nx">item</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="p">},</span> <span class="mi">200</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">ret</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">},</span> <span class="mi">1</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//[2, 4, 6];</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>In the above example only one item will be iterated at a time.</p>
+
+<p><strong><code>filter</code></strong></p>
+
+<p>Async version of <code>Array#filter</code>.</p>
+
+<div class="highlight"><pre><span class="c1">//as a monad</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">item</span> <span class="o">%</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//[1, 3];</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">item</span> <span class="o">%</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//[1, 3];</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>You may also return a promise from the iterator function, which will prevent the returned promise from resolving until all the returned promises are done.</p>
+
+<div class="highlight"><pre> <span class="c1">//as a monad</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+     <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">();</span>
+     <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ret</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span><span class="nx">item</span> <span class="o">%</span> <span class="mi">2</span><span class="p">);</span>
+     <span class="p">},</span> <span class="mi">200</span><span class="p">);</span>
+     <span class="k">return</span> <span class="nx">ret</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//[1, 3];</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>You may also specify a <code>limit</code> which will specify the number of items to be looped at a time, if limit is not specified then all items will be iterated regardless of whether or not the previous item in the array is done.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">();</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ret</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span><span class="nx">item</span> <span class="o">%</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="p">},</span> <span class="mi">200</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">ret</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">},</span> <span class="mi">1</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//[1, 3];</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>In the above example only one item will be iterated at a time.</p>
+
+<p><strong><code>every</code></strong></p>
+
+<p>Async version of <code>Array#every</code>.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">every</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">isNumber</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//true;</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">every</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">isNumber</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//true;</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>You may also return a promise from the iterator function, which will prevent the returned promise from resolving until all the returned promises are done.</p>
+
+<div class="highlight"><pre> <span class="c1">//as a monad</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">every</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+     <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">();</span>
+     <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ret</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span><span class="nx">isNumber</span><span class="p">(</span><span class="nx">item</span><span class="p">));</span>
+     <span class="p">},</span> <span class="mi">200</span><span class="p">);</span>
+     <span class="k">return</span> <span class="nx">ret</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//[true];</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>You may also specify a <code>limit</code> which will specify the number of items to be looped at a time, if limit is not specified then all items will be iterated regardless of whether or not the previous item in the array is done.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">every</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">();</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ret</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span><span class="nx">isNumber</span><span class="p">(</span><span class="nx">item</span><span class="p">));</span>
+    <span class="p">},</span> <span class="mi">200</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">ret</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">},</span> <span class="mi">1</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//true;</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>In the above example only one item will be iterated at a time.</p>
+
+<p><strong><code>some</code></strong></p>
+
+<p>Async version of <code>Array#every</code>.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">some</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">item</span> <span class="o">===</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//true;</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">some</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">item</span> <span class="o">===</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//true;</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>You may also return a promise from the iterator function, which will prevent the returned promise from resolving until all the returned promises are done.</p>
+
+<div class="highlight"><pre> <span class="c1">//as a monad</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">some</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+     <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">();</span>
+     <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ret</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span><span class="nx">item</span> <span class="o">===</span> <span class="mi">1</span><span class="p">);</span>
+     <span class="p">},</span> <span class="mi">200</span><span class="p">);</span>
+     <span class="k">return</span> <span class="nx">ret</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//[true];</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>You may also specify a <code>limit</code> which will specify the number of items to be looped at a time, if limit is not specified then all items will be iterated regardless of whether or not the previous item in the array is done.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">some</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">();</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ret</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span><span class="nx">item</span> <span class="o">===</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">},</span> <span class="mi">200</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">ret</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">},</span> <span class="mi">1</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//true;</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p>In the above example only one item will be iterated at a time.</p>
+
+<p><strong><code>sum</code></strong></p>
+
+<p>Sums the values of an array</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">sum</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">sum</span><span class="p">){</span>
+   <span class="c1">//6</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])).</span><span class="nx">sum</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">sum</span><span class="p">){</span>
+    <span class="c1">//6</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p><strong><code>avg</code></strong></p>
+
+<p>Finds the average of an array of numbers.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">avg</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">avg</span><span class="p">){</span>
+    <span class="c1">//2</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])).</span><span class="nx">avg</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">avg</span><span class="p">){</span>
+    <span class="c1">//2</span>
+<span class="p">});</span>
+</pre></div>
+
+<p><strong><code>sort</code></strong></p>
+
+<p>Sorts an array based on a property, by natural ordering, or by a custom comparator.</p>
+
+<p><strong>Note</strong> this does not change the original array.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">1</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">2</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">}]),</span> <span class="s2">"a"</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">sorted</span><span class="p">){</span>
+    <span class="c1">//[{a: -2},{a: 1},{a: 2}];</span>
+<span class="p">})</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">1</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">2</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">}])).</span><span class="nx">sort</span><span class="p">(</span><span class="s2">"a"</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">sorted</span><span class="p">){</span>
+    <span class="c1">//[{a: -2},{a: 1},{a: 2}];</span>
+<span class="p">})</span>
+
+
+</pre></div>
+
+<p><strong><code>min</code></strong></p>
+
+<p>Finds the minimum value in an array based on a property, by natural ordering, or by a custom comparator.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">min</span><span class="p">){</span>
+    <span class="c1">//-3</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">1</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">2</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">}]),</span> <span class="s2">"a"</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">min</span><span class="p">){</span>
+    <span class="c1">//{a : -2}</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])).</span><span class="nx">min</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">min</span><span class="p">){</span>
+    <span class="c1">//-3</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">1</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">2</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">}])).</span><span class="nx">min</span><span class="p">(</span><span class="s2">"a"</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">min</span><span class="p">){</span>
+    <span class="c1">//{a : -2}</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p><strong><code>max</code></strong></p>
+
+<p>Finds the maximum value in an array based on a property, by natural ordering, or by a custom comparator.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">max</span><span class="p">){</span>
+     <span class="c1">//2</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">1</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">2</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">}]),</span> <span class="s2">"a"</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">max</span><span class="p">){</span>
+    <span class="c1">//{a : 2}</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])).</span><span class="nx">max</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">max</span><span class="p">){</span>
+    <span class="c1">//2</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">1</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">2</span><span class="p">},{</span><span class="nx">a</span><span class="o">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">}])).</span><span class="nx">max</span><span class="p">(</span><span class="s2">"a"</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">max</span><span class="p">){</span>
+    <span class="c1">//{a : 2}</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<p><strong><code>difference</code></strong></p>
+
+<p>Finds the difference between two arrays.</p>
+
+<div class="highlight"><pre><span class="nx">pUtils</span><span class="p">.</span><span class="nx">difference</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="p">[</span><span class="mi">2</span><span class="p">]).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">diff</span><span class="p">){</span>
+    <span class="c1">//[1, 3]</span>
+<span class="p">});</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">difference</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="kc">true</span><span class="p">,</span> <span class="kc">false</span><span class="p">]),</span> <span class="nx">resolve</span><span class="p">([</span><span class="kc">false</span><span class="p">])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">diff</span><span class="p">){</span>
+    <span class="c1">//[true]</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">difference</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="nx">resolve</span><span class="p">([</span><span class="mi">3</span><span class="p">])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">diff</span><span class="p">){</span>
+    <span class="c1">//["a", "b"]</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">difference</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">3</span><span class="p">}]),</span> <span class="nx">resolve</span><span class="p">([{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">3</span><span class="p">}])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">diff</span><span class="p">){</span>
+    <span class="c1">//[{a: 1}]</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="kc">true</span><span class="p">,</span> <span class="kc">false</span><span class="p">])).</span><span class="nx">difference</span><span class="p">([</span><span class="kc">false</span><span class="p">]).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">diff</span><span class="p">){</span>
+    <span class="c1">// [true]</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">difference</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">2</span><span class="p">])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">diff</span><span class="p">){</span>
+    <span class="c1">// [1, 3]</span>
+<span class="p">});</span>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">difference</span><span class="p">([</span><span class="mi">2</span><span class="p">],</span> <span class="nx">resolve</span><span class="p">([</span><span class="mi">3</span><span class="p">])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">diff</span><span class="p">){</span>
+     <span class="c1">//[1]</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">difference</span><span class="p">([</span><span class="mi">3</span><span class="p">]).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">diff</span><span class="p">){</span>
+     <span class="c1">//["a", "b"]</span>
+<span class="p">});</span>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">3</span><span class="p">}])).</span><span class="nx">difference</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="nx">a</span><span class="o">:</span> <span class="mi">3</span><span class="p">}])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">diff</span><span class="p">){</span>
+    <span class="c1">// [{a: 1}]</span>
+<span class="p">});</span>
+</pre></div>
+
+<p><strong><code>unique</code></strong></p>
+
+<p>Removed duplicate values from an array</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">unique</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">unique</span><span class="p">){</span>
+    <span class="c1">//[1, 2, 3, 4]</span>
+<span class="p">})</span><span class="o">:</span>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">])).</span><span class="nx">unique</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">unique</span><span class="p">){</span>
+    <span class="c1">//[1, 2, 3, 4]</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">])).</span><span class="nx">unique</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">unique</span><span class="p">){</span>
+    <span class="c1">//["a", "b"]</span>
+<span class="p">});</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">unique</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">])).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">unique</span><span class="p">){</span>
+    <span class="c1">//["a", "b"]</span>
+<span class="p">});</span>
+</pre></div>
+
+<p><strong><code>rotate</code></strong></p>
+
+<p>Rotates an array by the number of places for 1 position by default.</p>
+
+<div class="highlight"><pre>
+<span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">,</span> <span class="s2">"d"</span><span class="p">]))</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">rotate</span><span class="p">();</span>   <span class="c1">//resolves with ["b", "c", "d", "a"]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>  <span class="c1">//resolves with ["c", "d", "a", "b"]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>  <span class="c1">//resolves with ["d", "a", "b", "c"]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>  <span class="c1">//resolves with ["a", "b", "c", "d"]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//resolves with ["d", "a", "b", "c"]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="c1">//resolves with ["c", "d", "a", "b"]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">);</span> <span class="c1">//resolves with ["b", "c", "d", "a"]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">);</span> <span class="c1">//resolves with ["a", "b", "c", "d"]</span>
+
+<span class="nx">arr</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">,</span> <span class="s2">"d"</span><span class="p">]);</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="nx">arr</span><span class="p">);</span>     <span class="c1">//resolves with ["b", "c", "d", "a"]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>  <span class="c1">//resolves with ["c", "d", "a", "b"]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>  <span class="c1">//resolves with ["d", "a", "b", "c"]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>  <span class="c1">//resolves with ["a", "b", "c", "d"]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1">//resolves with ["d", "a", "b", "c"]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="c1">//resolves with ["c", "d", "a", "b"]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">);</span> <span class="c1">//resolves with ["b", "c", "d", "a"]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">);</span> <span class="c1">//resolves with ["a", "b", "c", "d"]</span>
+
+</pre></div>
+
+<p><strong><code>permutations</code></strong></p>
+
+<p>Finds all permutations of an array.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">permutations</span><span class="p">();</span> <span class="c1">//resolves with [</span>
+                                 <span class="c1">//   [ 1, 2, 3 ],</span>
+                                 <span class="c1">//   [ 1, 3, 2 ],</span>
+                                 <span class="c1">//   [ 2, 3, 1 ],</span>
+                                 <span class="c1">//   [ 2, 1, 3 ],</span>
+                                 <span class="c1">//   [ 3, 1, 2 ],</span>
+                                 <span class="c1">//   [ 3, 2, 1 ]</span>
+                                 <span class="c1">//]</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">permutations</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="c1">// resolves with [</span>
+                                           <span class="c1">//   [ 1, 2],</span>
+                                           <span class="c1">//   [ 1, 3],</span>
+                                           <span class="c1">//   [ 2, 3],</span>
+                                           <span class="c1">//   [ 2, 1],</span>
+                                           <span class="c1">//   [ 3, 1],</span>
+                                           <span class="c1">//   [ 3, 2]</span>
+                                           <span class="c1">//]</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">permutations</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]));</span>   <span class="c1">// resolves with [</span>
+                                 <span class="c1">//   [ 1, 2, 3 ],</span>
+                                 <span class="c1">//   [ 1, 3, 2 ],</span>
+                                 <span class="c1">//   [ 2, 3, 1 ],</span>
+                                 <span class="c1">//   [ 2, 1, 3 ],</span>
+                                 <span class="c1">//   [ 3, 1, 2 ],</span>
+                                 <span class="c1">//   [ 3, 2, 1 ]</span>
+                                 <span class="c1">//]</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">permutations</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">//resolves with [</span>
+                                    <span class="c1">//   [ 1, 2],</span>
+                                    <span class="c1">//   [ 1, 3],</span>
+                                    <span class="c1">//   [ 2, 3],</span>
+                                    <span class="c1">//   [ 2, 1],</span>
+                                    <span class="c1">//   [ 3, 1],</span>
+                                    <span class="c1">//   [ 3, 2]</span>
+                                    <span class="c1">//]</span>
+
+</pre></div>
+
+<p><strong><code>zip</code></strong></p>
+
+<p>Zips the values of multiple arrays into a single pUtils.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">])).</span><span class="nx">zip</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">2</span><span class="p">]),</span> <span class="nx">resolve</span><span class="p">([</span><span class="mi">3</span><span class="p">]));</span><span class="c1">//resolves with [</span>
+                                                     <span class="c1">//  [ 1, 2, 3 ]</span>
+                                                     <span class="c1">//];</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])).</span><span class="nx">zip</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">3</span><span class="p">]);</span>      <span class="c1">//resolves with [</span>
+                                                     <span class="c1">//  [ 1, 2, 3 ],</span>
+                                                     <span class="c1">//  [2, null, null]</span>
+                                                     <span class="c1">//]</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">zip</span><span class="p">([</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span> <span class="p">],</span> <span class="nx">b</span><span class="p">);</span>      <span class="c1">//resolves with [</span>
+                                                     <span class="c1">//  [1, 4, 7],</span>
+                                                     <span class="c1">//  [2, 5, 8],</span>
+                                                     <span class="c1">//  [3, 6, 9]</span>
+                                                     <span class="c1">//]</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])).</span><span class="nx">zip</span><span class="p">([</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span> <span class="p">],</span> <span class="nx">resolve</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span> <span class="p">]));</span> <span class="c1">//resolves with [</span>
+                                                               <span class="c1">//  [1, 4, 7],</span>
+                                                               <span class="c1">//  [2, 5, 8]</span>
+                                                               <span class="c1">//]</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span> <span class="p">])).</span><span class="nx">zip</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">]);</span>       <span class="c1">//resolves with [</span>
+                                                     <span class="c1">//  [4, 1, 8],</span>
+                                                     <span class="c1">//  [5, 2, null],</span>
+                                                     <span class="c1">//  [6, null, null]</span>
+                                                     <span class="c1">//]</span>
+
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">zip</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]);</span>                  <span class="c1">//resolves with [</span>
+                                                     <span class="c1">//  [ 1, 2, 3 ]</span>
+                                                     <span class="c1">//]</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">zip</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="nx">resolve</span><span class="p">([</span><span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">3</span><span class="p">]);</span>      <span class="c1">//resolves with [</span>
+                                                     <span class="c1">//  [ 1, 2, 3 ],</span>
+                                                     <span class="c1">//  [2, null, null]</span>
+                                                     <span class="c1">//]</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">zip</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span>  <span class="nx">resolve</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span> <span class="p">]));</span> <span class="c1">//resolves with [</span>
+                                                               <span class="c1">//  [1, 4, 7],</span>
+                                                               <span class="c1">//  [2, 5, 8],</span>
+                                                               <span class="c1">//  [3, 6, 9]</span>
+                                                               <span class="c1">//]</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">zip</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span>  <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span> <span class="p">]);</span>    <span class="c1">//resolves with [</span>
+                                                      <span class="c1">//  [1, 4, 7],</span>
+                                                      <span class="c1">//  [2, 5, 8]</span>
+                                                      <span class="c1">//]</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">zip</span><span class="p">([</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span> <span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="nx">resolve</span><span class="p">([</span><span class="mi">8</span><span class="p">]));</span>        <span class="c1">//resolves with [</span>
+                                                      <span class="c1">//  [4, 1, 8],</span>
+                                                      <span class="c1">//  [5, 2, null],</span>
+                                                      <span class="c1">//  [6, null, null]</span>
+                                                      <span class="c1">//]</span>
+
+</pre></div>
+
+<p><strong><code>transpose</code></strong></p>
+
+<p>Transpose a multi dimensional array.</p>
+
+<div class="highlight"><pre><span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])).</span><span class="nx">transpose</span><span class="p">();</span>   <span class="c1">//resolves with [ [ 1, 4 ], [ 2, 5 ], [ 3, 6 ] ]</span>
+<span class="nx">pUtils</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]).</span><span class="nx">async</span><span class="p">().</span><span class="nx">transpose</span><span class="p">();</span>   <span class="c1">//resolves with [ [ 1, 3, 5 ], [ 2, 4, 6 ] ]</span>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([[</span><span class="mi">1</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])).</span><span class="nx">transpose</span><span class="p">();</span>     <span class="c1">//resolves with [ [1] ]</span>
+
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">transpose</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]));</span>     <span class="c1">//resolves with [ [ 1, 4 ], [ 2, 5 ], [ 3, 6 ] ]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">transpose</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]));</span>    <span class="c1">//resolves with [ [ 1, 3, 5 ], [ 2, 4, 6 ] ]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">transpose</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([[</span><span class="mi">1</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]));</span>       <span class="c1">//resolves with [ [1] ]</span>
+</pre></div>
+
+<p><strong><code>valuesAt</code></strong></p>
+
+<p>Gathers values at the specified indexes.</p>
+
+<div class="highlight"><pre>
+<span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">,</span> <span class="s2">"d"</span><span class="p">]));</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">valuesAt</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>      <span class="c1">//resolves with ["b", "c", "d"]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">valuesAt</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>   <span class="c1">//resolves with ["b", "c", "d", null]</span>
+<span class="nx">arr</span><span class="p">.</span><span class="nx">valuesAt</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>         <span class="c1">//resolves with ["a", "d"]</span>
+
+<span class="nx">arr</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">,</span> <span class="s2">"d"</span><span class="p">]);</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">valuesAt</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>       <span class="c1">//resolves with ["b", "c", "d"]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">valuesAt</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>    <span class="c1">//resolves with ["b", "c", "d", null]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">valuesAt</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>          <span class="c1">//resolves with ["a", "d"]</span>
+</pre></div>
+
+<p><strong><code>union</code></strong></p>
+
+<p>Finds the union of two arrays.</p>
+
+<div class="highlight"><pre><span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">])).</span><span class="nx">union</span><span class="p">([</span><span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">,</span> <span class="s2">"d"</span><span class="p">]);</span>           <span class="c1">//resolves with ["a", "b", "c", "d"]);</span>
+<span class="nx">pUtils</span><span class="p">([</span><span class="s2">"a"</span><span class="p">]).</span><span class="nx">async</span><span class="p">().</span><span class="nx">union</span><span class="p">([</span><span class="s2">"b"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"c"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"d"</span><span class="p">],</span> <span class="nx">resolve</span><span class="p">([</span><span class="s2">"c"</span><span class="p">]));</span>  <span class="c1">//resolves with ["a", "b", "c", "d"]);</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">union</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">]),</span> <span class="p">[</span><span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">,</span> <span class="s2">"d"</span><span class="p">]);</span>           <span class="c1">//resolves with ["a", "b", "c", "d"]);</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">union</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="s2">"a"</span><span class="p">]),</span> <span class="p">[</span><span class="s2">"b"</span><span class="p">],</span> <span class="nx">resolve</span><span class="p">([</span><span class="s2">"c"</span><span class="p">]),</span> <span class="p">[</span><span class="s2">"d"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"c"</span><span class="p">]);</span> <span class="c1">//resolves with ["a", "b", "c", "d"]);</span>
+</pre></div>
+
+<p><strong><code>intersect</code></strong></p>
+
+<p>Finds the intersection of arrays.</p>
+
+<div class="highlight"><pre><span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])).</span><span class="nx">intersect</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]);</span>                            <span class="c1">//resolves with [2];</span>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">intersect</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]);</span>                   <span class="c1">//resolves with [2, 3];</span>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])).</span><span class="nx">intersect</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]);</span>             <span class="c1">//resolves with [2, 3, 4];</span>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])).</span><span class="nx">intersect</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]);</span>          <span class="c1">//resolves with [1, 2, 3];</span>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])).</span><span class="nx">intersect</span><span class="p">();</span>        <span class="c1">//resolves with [1, 2, 3];</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">intersect</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]);</span>                             <span class="c1">//resolves with [2]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">intersect</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]);</span>                    <span class="c1">//resolves with [2, 3]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">intersect</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]),</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="nx">resolve</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]));</span>     <span class="c1">//resolves with [2, 3, 4]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">intersect</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]);</span>           <span class="c1">//resolves with [1, 2, 3]);</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">intersect</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]));</span>          <span class="c1">//resolves with [1, 2, 3]);</span>
+</pre></div>
+
+<p><strong><code>powerSet</code></strong></p>
+
+<p>Finds the powerset of a given array.</p>
+
+<div class="highlight"><pre><span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])).</span><span class="nx">powerSet</span><span class="p">();</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">powerSet</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]));</span>
+<span class="c1">//Both resolve with</span>
+<span class="c1">//[</span>
+<span class="c1">//  [],</span>
+<span class="c1">//  [ 1 ],</span>
+<span class="c1">//  [ 2 ],</span>
+<span class="c1">//  [ 1, 2 ],</span>
+<span class="c1">//  [ 3 ],</span>
+<span class="c1">//  [ 1, 3 ],</span>
+<span class="c1">//  [ 2, 3 ],</span>
+<span class="c1">//  [ 1, 2, 3 ]</span>
+<span class="c1">//]</span>
+</pre></div>
+
+<p><strong><code>cartesian</code></strong></p>
+
+<p>Finds the cartesian product of arrays.</p>
+
+<div class="highlight"><pre><span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])).</span><span class="nx">cartesian</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]));</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">cartesian</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]);</span>
+<span class="c1">//Both resolve with</span>
+<span class="c1">//[</span>
+<span class="c1">//  [1, 2],</span>
+<span class="c1">//  [1, 3],</span>
+<span class="c1">//  [2, 2],</span>
+<span class="c1">//  [2, 3]</span>
+<span class="c1">//]</span>
+</pre></div>
+
+<p><strong><code>compact</code></strong></p>
+
+<p>Compacts the values of an array.</p>
+
+<div class="highlight"><pre><span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">])).</span><span class="nx">compact</span><span class="p">();</span> <span class="c1">//Resolves with [1, 2]</span>
+
+<span class="nx">pUtils</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]).</span><span class="nx">async</span><span class="p">().</span><span class="nx">compact</span><span class="p">();</span>  <span class="c1">//Resolves with [1, 2]</span>
+
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">compact</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">]));</span> <span class="c1">//Resolves with [1, 2]</span>
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">compact</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]));</span> <span class="c1">//Resolves with [1, 2]</span>
+</pre></div>
+
+<p><strong><code>multiply</code></strong></p>
+
+<p>Reproduces the values in an array the given number of times.</p>
+
+<div class="highlight"><pre><span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])).</span><span class="nx">multiply</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span> <span class="c1">//Resolves with[1, 2, 1, 2, 1, 2]</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">multiply</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">//Resolves with [1, 2, 3, 1, 2, 3]</span>
+</pre></div>
+
+<p><strong><code>flatten</code></strong></p>
+
+<p>Flatten multiple arrays into a single array.</p>
+
+<div class="highlight"><pre>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="p">])).</span><span class="nx">flatten</span><span class="p">();</span> <span class="c1">//Resolves with [1, 2, 3]</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">flatten</span><span class="p">(</span><span class="nx">resolve</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="nx">resolve</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]));</span> <span class="c1">//Resolves with [1, 2, 2, 3, 3, 4]</span>
+
+</pre></div>
+
+<p><strong><code>pluck</code></strong></p>
+
+<p>Pluck properties from values in an array.</p>
+
+<p><strong>NOTE</strong> Plucked properties may also be promises. <code>pluck</code> will return the resolved value of the promise</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">([</span>
+    <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="p">{</span><span class="nx">first</span><span class="o">:</span> <span class="s2">"Fred"</span><span class="p">,</span> <span class="nx">last</span><span class="o">:</span> <span class="s2">"Jones"</span><span class="p">},</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">50</span><span class="p">,</span> <span class="nx">roles</span><span class="o">:</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">]},</span>
+    <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="p">{</span><span class="nx">first</span><span class="o">:</span> <span class="nx">resolve</span><span class="p">(</span><span class="s2">"Bob"</span><span class="p">),</span> <span class="nx">last</span><span class="o">:</span> <span class="s2">"Yukon"</span><span class="p">},</span> <span class="nx">age</span><span class="o">:</span> <span class="nx">resolve</span><span class="p">(</span><span class="mi">40</span><span class="p">),</span> <span class="nx">roles</span><span class="o">:</span> <span class="nx">resolve</span><span class="p">([</span><span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">])},</span>
+    <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="p">{</span><span class="nx">first</span><span class="o">:</span> <span class="s2">"Alice"</span><span class="p">,</span> <span class="nx">last</span><span class="o">:</span> <span class="s2">"Palace"</span><span class="p">},</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">35</span><span class="p">,</span> <span class="nx">roles</span><span class="o">:</span> <span class="p">[</span><span class="s2">"c"</span><span class="p">]},</span>
+    <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="p">{</span><span class="nx">first</span><span class="o">:</span> <span class="nx">resolve</span><span class="p">(</span><span class="s2">"Johnny"</span><span class="p">),</span> <span class="nx">last</span><span class="o">:</span> <span class="s2">"P."</span><span class="p">},</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">56</span><span class="p">,</span> <span class="nx">roles</span><span class="o">:</span> <span class="nx">resolve</span><span class="p">([])}</span>
+<span class="p">]);</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">pluck</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="s2">"name.first"</span><span class="p">);</span> <span class="c1">//Resolves with ["Fred", "Bob", "Alice", "Johnny"]</span>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">arr</span><span class="p">).</span><span class="nx">pluck</span><span class="p">(</span><span class="s2">"age"</span><span class="p">);</span> <span class="c1">//Resolves with [50, 40, 35, 56]</span>
+
+</pre></div>
+
+<p><strong><code>invoke</code></strong></p>
+
+<p>Invokes the specified method on each value in an array.</p>
+
+<div class="highlight"><pre>
+<span class="kd">function</span> <span class="nx">person</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">age</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="nx">getName</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>
+        <span class="p">},</span>
+
+        <span class="nx">getOlder</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">age</span><span class="o">++</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nx">resolve</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+        <span class="p">},</span>
+
+        <span class="nx">getAge</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">age</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="nx">resolve</span><span class="p">([</span><span class="nx">person</span><span class="p">(</span><span class="s2">"Bob"</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="nx">person</span><span class="p">(</span><span class="s2">"Alice"</span><span class="p">,</span> <span class="mi">35</span><span class="p">),</span> <span class="nx">person</span><span class="p">(</span><span class="s2">"Fred"</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="nx">person</span><span class="p">(</span><span class="s2">"Johnny"</span><span class="p">,</span> <span class="mi">56</span><span class="p">)]);</span>
+
+<span class="nx">pUtils</span><span class="p">.</span><span class="nx">invoke</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="s2">"getName"</span><span class="p">);</span> <span class="c1">//Resolves with ["Bob", "Alice", "Fred", "Johnny"];</span>
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">arr</span><span class="p">).</span><span class="nx">invoke</span><span class="p">(</span><span class="s2">"getName"</span><span class="p">);</span> <span class="c1">//Resolves with ["Bob", "Alice", "Fred", "Johnny"];</span>
+
+<span class="nx">pUtils</span><span class="p">(</span><span class="nx">arr</span><span class="p">).</span><span class="nx">invoke</span><span class="p">(</span><span class="s2">"getOlder"</span><span class="p">).</span><span class="nx">invoke</span><span class="p">(</span><span class="s2">"getAge"</span><span class="p">);</span> <span class="c1">//Resolves with [41, 36, 51, 57];</span>
+</pre></div>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/doug-martin/promise-utils/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/doug-martin/promise-utils/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/doug-martin/promise-utils"></a> is maintained by <a href="https://github.com/doug-martin">doug-martin</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
