@@ -12,6 +12,7 @@
 
         var when = promise.when,
             serial = promise.serial,
+            chain = promise.chain,
             isDefined = is.isDefined,
             isNumber = is.isNumber,
             isString = is.isString,
@@ -307,6 +308,69 @@
             });
         }
 
+        function reverse(arrPromise) {
+            return when(arrPromise).then(function (result) {
+                return result.reverse();
+            });
+        }
+
+        function at(arrPromise, index) {
+            return when(arrPromise).then(function (result) {
+                return result[index];
+            });
+        }
+
+        function reduce(arrPromise, callback, accumulator) {
+            var noaccum = arguments.length < 2;
+            return when(arrPromise).then(function (arr) {
+                arr = isArray(arr) ? arr : [arr];
+                var index = -1;
+
+                if (noaccum) {
+                    accumulator = arr[++index];
+                }
+                return chain(arr.map(function (item, i, arr) {
+                    if (i === 0) {
+                        return function () {
+                            return callback.apply(undefined, [accumulator, item, i, arr]);
+                        };
+                    } else {
+                        return function (accumulator) {
+                            return callback.apply(undefined, [accumulator, item, i, arr]);
+                        };
+                    }
+                })).then(function (res) {
+                        return res;
+                    });
+            });
+        }
+
+        function reduceRight(arrPromise, callback, accumulator) {
+            var noaccum = arguments.length < 2;
+            return when(arrPromise).then(function (arr) {
+                arr = isArray(arr) ? arr : [arr];
+                var index = -1,
+                    length = arr.length;
+
+                if (noaccum) {
+                    accumulator = arr[++index];
+                }
+                return chain(arr.slice().reverse().map(function (item, i) {
+                    if (i === 0) {
+                        return function () {
+                            return callback.apply(undefined, [accumulator, item, length - (i + 1), arr]);
+                        };
+                    } else {
+                        return function (accumulator) {
+                            return callback.apply(undefined, [accumulator, item, length - (i + 1), arr]);
+                        };
+                    }
+                })).then(function (res) {
+                        return res;
+                    });
+            });
+        }
+
         var promiseUtils = {
             forEach: asyncForEach,
             map: asyncMap,
@@ -335,6 +399,9 @@
             flatten: asyncFlatten,
             pluck: asyncPluck,
             invoke: asyncInvoke,
+            at: at,
+            reduce: reduce,
+            reduceRight: reduceRight,
             then: function (p, cb, eb) {
                 return p.then(cb, eb);
             },
@@ -371,12 +438,12 @@
             module.exports = definePromiseUtils(require("extended"), require("promise-extended"), require("is-extended"), require("array-extended"), require("object-extended"));
 
         }
-    } else if ("function" === typeof define) {
+    } else if ("function" === typeof define && define.amd) {
         define(["extended", "promise-extended", "is-extended", "array-extended", "object-extended"], function (extended, promise, is, arr, obj) {
             return definePromiseUtils(extended, promise, is, arr, obj);
         });
     } else {
-        this.isExtended = definePromiseUtils(this.extended, this.promiseExtended, this.isExtended, this.arrayExtended, this.objectExtended);
+        this.promiseUtils = definePromiseUtils(this.extended, this.promiseExtended, this.isExtended, this.arrayExtended, this.objectExtended);
     }
 
 }).call(this);

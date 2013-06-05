@@ -1,6 +1,7 @@
 var it = require("it");
 
 it.reporter("tap");
+require("./at.test");
 require("./avg.test");
 require("./cartesian.test");
 require("./chaining.test");
@@ -19,6 +20,8 @@ require("./multiply.test");
 require("./permutations.test");
 require("./pluck.test");
 require("./powerSet.test");
+require("./reduce.test");
+require("./reduceRight.test");
 require("./removeDuplicates.test");
 require("./rotate.test");
 require("./some.test");
