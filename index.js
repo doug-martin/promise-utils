@@ -1,14 +1,8 @@
 (function () {
     "use strict";
 
-    function definePromiseUtils(extended, promise, is, array, obj) {
+    function definePromiseUtils(extended, promise, is, array, args) {
 
-        var pSlice = Array.prototype.slice;
-
-        function argsToArray(args, slice) {
-            slice = slice || 0;
-            return pSlice.call(args, slice);
-        }
 
         var when = promise.when,
             serial = promise.serial,
@@ -38,7 +32,8 @@
             compact = array.compact,
             multiply = array.multiply,
             flatten = array.flatten,
-            invoke = array.invoke;
+            invoke = array.invoke,
+            argsToArray = args.argsToArray;
 
         function _loopResults(cb, scope, results, index, offset, limit) {
             return function () {
@@ -435,15 +430,15 @@
 
     if ("undefined" !== typeof exports) {
         if ("undefined" !== typeof module && module.exports) {
-            module.exports = definePromiseUtils(require("extended"), require("promise-extended"), require("is-extended"), require("array-extended"), require("object-extended"));
+            module.exports = definePromiseUtils(require("extended"), require("promise-extended"), require("is-extended"), require("array-extended"), require("arguments-extended"));
 
         }
     } else if ("function" === typeof define && define.amd) {
-        define(["extended", "promise-extended", "is-extended", "array-extended", "object-extended"], function (extended, promise, is, arr, obj) {
-            return definePromiseUtils(extended, promise, is, arr, obj);
+        define(["extended", "promise-extended", "is-extended", "array-extended", "arguments-extended"], function (extended, promise, is, arr, args) {
+            return definePromiseUtils(extended, promise, is, arr, args);
         });
     } else {
-        this.promiseUtils = definePromiseUtils(this.extended, this.promiseExtended, this.isExtended, this.arrayExtended, this.objectExtended);
+        this.promiseUtils = definePromiseUtils(this.extended, this.promiseExtended, this.isExtended, this.arrayExtended, this.argumentsExtended);
     }
 
 }).call(this);
